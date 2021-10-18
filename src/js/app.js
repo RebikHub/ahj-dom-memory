@@ -2,7 +2,7 @@ import imdb from './imdb.json';
 
 console.log('app started');
 
-let count = 0;
+let count = null;
 const arrowUp = '\u{1F815}';
 const arrowDown = '\u{1F817}';
 const html = `
@@ -19,119 +19,133 @@ imdbList.firstElementChild.innerHTML = html;
 
 const rowElement = imdbList.firstElementChild.firstElementChild;
 
-for (let i = 0; i < imdb.length; i += 1) {
-  const cloneTr = rowElement.cloneNode();
-  cloneTr.dataset.id = imdb[i].id;
-  cloneTr.dataset.title = imdb[i].title;
-  cloneTr.dataset.year = imdb[i].year;
-  cloneTr.dataset.imdb = `imdb: ${imdb[i].imdb.toFixed(2)}`;
-  cloneTr.classList.add('with-data');
-  imdbList.firstElementChild.appendChild(cloneTr);
-}
+function render(data, countArg, arrow) {
+  for (let i = 0; i < data.length; i += 1) {
+    const cloneTr = rowElement.cloneNode();
+    cloneTr.dataset.id = data[i].id;
+    cloneTr.dataset.title = data[i].title;
+    cloneTr.dataset.year = data[i].year;
+    cloneTr.dataset.imdb = `imdb: ${data[i].imdb.toFixed(2)}`;
+    cloneTr.classList.add('with-data');
+    imdbList.firstElementChild.appendChild(cloneTr);
+  }
 
-const list = Array.from(document.querySelectorAll('.with-data'));
+  const list = Array.from(document.querySelectorAll('.with-data'));
 
-list.forEach((elem) => {
-  const cloneTdId = rowElement.firstElementChild.cloneNode();
-  const cloneTdTitle = rowElement.firstElementChild.cloneNode();
-  const cloneTdYear = rowElement.firstElementChild.cloneNode();
-  const cloneTdImdb = rowElement.firstElementChild.cloneNode();
-  cloneTdId.textContent = elem.dataset.id;
-  elem.appendChild(cloneTdId);
-  cloneTdTitle.textContent = elem.dataset.title;
-  elem.appendChild(cloneTdTitle);
-  cloneTdYear.textContent = elem.dataset.year;
-  elem.appendChild(cloneTdYear);
-  cloneTdImdb.textContent = elem.dataset.imdb;
-  elem.appendChild(cloneTdImdb);
-});
+  list.forEach((elem) => {
+    const cloneTdId = rowElement.firstElementChild.cloneNode();
+    const cloneTdTitle = rowElement.firstElementChild.cloneNode();
+    const cloneTdYear = rowElement.firstElementChild.cloneNode();
+    const cloneTdImdb = rowElement.firstElementChild.cloneNode();
+    cloneTdId.textContent = elem.dataset.id;
+    elem.appendChild(cloneTdId);
+    cloneTdTitle.textContent = elem.dataset.title;
+    elem.appendChild(cloneTdTitle);
+    cloneTdYear.textContent = elem.dataset.year;
+    elem.appendChild(cloneTdYear);
+    cloneTdImdb.textContent = elem.dataset.imdb;
+    elem.appendChild(cloneTdImdb);
+  });
 
-function getSortImdb(listTr) {
-  const tbody = document.querySelector('tbody');
-  let listId = null;
   if (count === 0) {
-    rowElement.children[0].textContent = `${rowElement.children[0].textContent} ${arrowDown}`;
-    listId = listTr.sort((a, b) => a.dataset.id - b.dataset.id);
-    count += 1;
+    rowElement.children[3].textContent = 'imdb';
+    rowElement.children[0].textContent = `id ${arrow}`;
   } else if (count === 1) {
     rowElement.children[0].textContent = 'id';
-    rowElement.children[0].textContent = `${rowElement.children[0].textContent} ${arrowUp}`;
-    listId = listTr.sort((a, b) => b.dataset.id - a.dataset.id);
-    count += 1;
+    rowElement.children[0].textContent = `id ${arrow}`;
   } else if (count === 2) {
     rowElement.children[0].textContent = 'id';
-    rowElement.children[1].textContent = `title ${arrowDown}`;
-    listId = listTr.sort((a, b) => {
-      if (a.dataset.title < b.dataset.title) {
-        return -1;
-      }
-      if (a.dataset.title > b.dataset.title) {
-        return 1;
-      }
-      return 0;
-    });
-    count += 1;
+    rowElement.children[1].textContent = `title ${arrow}`;
   } else if (count === 3) {
     rowElement.children[1].textContent = 'title';
-    rowElement.children[1].textContent = `title ${arrowUp}`;
-    listId = listTr.sort((a, b) => {
-      if (a.dataset.title < b.dataset.title) {
-        return 1;
-      }
-      if (a.dataset.title > b.dataset.title) {
-        return -1;
-      }
-      return 0;
-    });
-    count += 1;
+    rowElement.children[1].textContent = `title ${arrow}`;
   } else if (count === 4) {
     rowElement.children[1].textContent = 'title';
-    rowElement.children[2].textContent = `year ${arrowDown}`;
-    listId = listTr.sort((a, b) => a.dataset.year - b.dataset.year);
-    count += 1;
+    rowElement.children[2].textContent = `year ${arrow}`;
   } else if (count === 5) {
     rowElement.children[2].textContent = 'year';
-    rowElement.children[2].textContent = `year ${arrowUp}`;
-    listId = listTr.sort((a, b) => b.dataset.year - a.dataset.year);
-    count += 1;
+    rowElement.children[2].textContent = `year ${arrow}`;
   } else if (count === 6) {
     rowElement.children[2].textContent = 'year';
-    rowElement.children[3].textContent = `imdb ${arrowDown}`;
-    listId = listTr.sort((a, b) => {
-      if (a.dataset.imdb < b.dataset.imdb) {
-        return -1;
-      }
-      if (a.dataset.imdb > b.dataset.imdb) {
-        return 1;
-      }
-      return 0;
-    });
-    count += 1;
+    rowElement.children[3].textContent = `imdb ${arrow}`;
   } else if (count === 7) {
     rowElement.children[3].textContent = 'imdb';
-    rowElement.children[3].textContent = `imdb ${arrowUp}`;
-    listId = listTr.sort((a, b) => {
-      if (a.dataset.imdb < b.dataset.imdb) {
-        return 1;
-      }
-      if (a.dataset.imdb > b.dataset.imdb) {
-        return -1;
-      }
-      return 0;
-    });
-    count += 1;
-  } else {
-    rowElement.children[3].textContent = 'imdb';
-    count = 0;
-  }
-  for (let i = 0; i < listId.length; i += 1) {
-    tbody.removeChild(tbody.lastElementChild);
-  }
-  for (let i = 0; i < listId.length; i += 1) {
-    tbody.appendChild(listId[i]);
+    rowElement.children[3].textContent = `imdb ${arrow}`;
   }
 }
 
+function removeRender() {
+  const tbody = document.querySelector('tbody');
+  const list = Array.from(document.querySelectorAll('.with-data'));
+  for (let i = 0; i < list.length; i += 1) {
+    tbody.removeChild(tbody.lastElementChild);
+  }
+}
+
+function getSortImdb(objList) {
+  if (count === 0) {
+    objList.sort((a, b) => a.id - b.id);
+    removeRender();
+    render(objList, count, arrowDown);
+    count += 1;
+  } else if (count === 1) {
+    objList.sort((a, b) => b.id - a.id);
+    removeRender();
+    render(objList, count, arrowUp);
+    count += 1;
+  } else if (count === 2) {
+    objList.sort((a, b) => {
+      if (a.title < b.title) {
+        return -1;
+      }
+      if (a.title > b.title) {
+        return 1;
+      }
+      return 0;
+    });
+    removeRender();
+    render(objList, count, arrowDown);
+    count += 1;
+  } else if (count === 3) {
+    objList.sort((a, b) => {
+      if (a.title < b.title) {
+        return 1;
+      }
+      if (a.title > b.title) {
+        return -1;
+      }
+      return 0;
+    });
+    removeRender();
+    render(objList, count, arrowUp);
+    count += 1;
+  } else if (count === 4) {
+    objList.sort((a, b) => a.year - b.year);
+    removeRender();
+    render(objList, count, arrowDown);
+    count += 1;
+  } else if (count === 5) {
+    objList.sort((a, b) => b.year - a.year);
+    removeRender();
+    render(objList, count, arrowUp);
+    count += 1;
+  } else if (count === 6) {
+    objList.sort((a, b) => a.imdb - b.imdb);
+    removeRender();
+    render(objList, count, arrowDown);
+    count += 1;
+  } else if (count === 7) {
+    objList.sort((a, b) => b.imdb - a.imdb);
+    removeRender();
+    render(objList, count, arrowUp);
+    count += 1;
+  } else {
+    count = 0;
+  }
+}
+
+render(imdb);
+
 setInterval(() => {
-  getSortImdb(list);
+  getSortImdb(imdb);
 }, 2000);
